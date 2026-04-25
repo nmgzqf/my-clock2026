@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- 👇 这行是全屏核心：禁止缩放、占满屏幕 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,22 +20,24 @@
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #0f1c2e;
-            color: #ff9500; /* 白色 */
-            display: -webkit-box;
-            -webkit-box-pack: center;
-            -webkit-box-align: center;
-            -webkit-box-orient: vertical;
+            color: #ff9500;
+            /* 修复：标准垂直水平居中，解决iPad偏上 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             text-align: center;
         }
-        /* 👇 全屏核心：禁止选中、不抖动 */
         #clock {
             -webkit-user-select: none;
             user-select: none;
         }
+        /* 缩小日期字号，防止星期换行 */
         #date-part {
-            font-size: 8em;
-            margin-bottom: 15px;
+            font-size: 5.5em;
+            margin-bottom: 20px;
             text-shadow: 0 0 6px rgba(255,255,255,0.7);
+            white-space: nowrap; /* 强制不换行 */
         }
         #time-part {
             font-size: 13em;
@@ -66,10 +67,8 @@
             var i = pad(now.getMinutes());
             var s = pad(now.getSeconds());
 
-            // 新增：获取星期
             var week = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"][now.getDay()];
             
-            // 日期 + 星期 显示在同一行
             dateEl.innerText = y + '-' + m + '-' + d + "  " + week;
             timeEl.innerText = h + ':' + i + ':' + s;
             
