@@ -2,7 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <!-- 👇 这行是全屏核心：禁止缩放、占满屏幕 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>全屏时钟</title>
     <style>
         * {
@@ -13,74 +16,66 @@
         html, body {
             width: 100%;
             height: 100%;
-            background: #0f1c2e;
-            color: #ff9500;
-            font-family: Arial, "Microsoft YaHei", sans-serif;
+            overflow: hidden;
         }
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #0f1c2e;
+            color: #ff9500; /* 白色 */
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            -webkit-box-orient: vertical;
             text-align: center;
         }
-        /* 日期 + 星期 同一行 */
-        #top {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 40px;
+        /* 👇 全屏核心：禁止选中、不抖动 */
+        #clock {
+            -webkit-user-select: none;
+            user-select: none;
         }
-        #date {
-            font-size: 5em;
-            text-shadow: 0 0 10px rgba(255,255,255,0.6);
+        #date-part {
+            font-size: 8em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 6px rgba(255,255,255,0.7);
         }
-        #week {
-            font-size: 4.5em;
-            opacity: 0.9;
-        }
-        /* 时间（超大字体） */
-        #time {
-            font-size: 15em;
+        #time-part {
+            font-size: 13em;
             font-weight: bold;
-            text-shadow: 0 0 30px rgba(255, 149, 0, 0.9);
+            text-shadow: 0 0 20px rgba(255,255,255,0.9);
         }
     </style>
 </head>
 <body>
-    <div id="top">
-        <div id="date">0000-00-00</div>
-        <div id="week">星期几</div>
+    <div id="clock">
+        <div id="date-part">0000-00-00</div>
+        <div id="time-part">00:00:00</div>
     </div>
-    <div id="time">00:00:00</div>
 
     <script>
-        var dateEl = document.getElementById('date');
-        var weekEl = document.getElementById('week');
-        var timeEl = document.getElementById('time');
-
-        function pad(n) {
-            return n < 10 ? '0' + n : n;
-        }
-
-        function updateClock() {
+        var dateEl = document.getElementById('date-part');
+        var timeEl = document.getElementById('time-part');
+        
+        function pad(n) { return n < 10 ? '0' + n : n; }
+        
+        function update() {
             var now = new Date();
-            var year = now.getFullYear();
-            var month = pad(now.getMonth() + 1);
-            var day = pad(now.getDate());
-            var hour = pad(now.getHours());
-            var minute = pad(now.getMinutes());
-            var second = pad(now.getSeconds());
-            
+            var y = now.getFullYear();
+            var m = pad(now.getMonth()+1);
+            var d = pad(now.getDate());
+            var h = pad(now.getHours());
+            var i = pad(now.getMinutes());
+            var s = pad(now.getSeconds());
+
+            // 新增：获取星期
             var week = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"][now.getDay()];
-
-            dateEl.innerText = year + "-" + month + "-" + day;
-            weekEl.innerText = week;
-            timeEl.innerText = hour + ":" + minute + ":" + second;
+            
+            // 日期 + 星期 显示在同一行
+            dateEl.innerText = y + '-' + m + '-' + d + "  " + week;
+            timeEl.innerText = h + ':' + i + ':' + s;
+            
+            setTimeout(update, 1000);
         }
-
-        setInterval(updateClock, 1000);
-        updateClock();
+        update();
     </script>
 </body>
 </html>
